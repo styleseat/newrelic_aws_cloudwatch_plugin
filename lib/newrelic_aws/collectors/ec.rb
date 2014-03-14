@@ -1,6 +1,48 @@
 module NewRelicAWS
   module Collectors
     class EC < Base
+      ALL_METRICS = [
+        ["CPUUtilization", "Average", "Percent"],
+        ["SwapUsage", "Average", "Bytes"],
+        ["FreeableMemory", "Average", "Bytes"],
+        ["NetworkBytesIn", "Average", "Bytes"],
+        ["NetworkBytesOut", "Average", "Bytes"],
+        ["BytesUsedForCacheItems", "Average", "Bytes"],
+        ["BytesReadIntoMemcached", "Sum", "Bytes"],
+        ["BytesWrittenOutFromMemcached", "Sum", "Bytes"],
+        ["CasBadval", "Sum", "Count"],
+        ["CasHits", "Sum", "Count"],
+        ["CasMisses", "Sum", "Count"],
+        ["CmdFlush", "Sum", "Count"],
+        ["CmdGet", "Sum", "Count"],
+        ["CmdSet", "Sum", "Count"],
+        ["CurrConnections", "Average", "Count"],
+        ["CurrItems", "Average", "Count"],
+        ["DecrHits", "Sum", "Count"],
+        ["DecrMisses", "Sum", "Count"],
+        ["DeleteHits", "Sum", "Count"],
+        ["DeleteMisses", "Sum", "Count"],
+        ["Evictions", "Sum", "Count"],
+        ["GetHits", "Sum", "Count"],
+        ["GetMisses", "Sum", "Count"],
+        ["IncrHits", "Sum", "Count"],
+        ["IncrMisses", "Sum", "Count"],
+        ["Reclaimed", "Sum", "Count"],
+        ["BytesUsedForHash", "Average", "Bytes"],
+        ["CmdConfigGet", "Sum", "Count"],
+        ["CmdConfigSet", "Sum", "Count"],
+        ["CmdTouch", "Sum", "Count"],
+        ["CurrConfig", "Average", "Count"],
+        ["EvictedUnfetched", "Sum", "Count"],
+        ["ExpiredUnfetched", "Sum", "Count"],
+        ["SlabsMoved", "Sum", "Count"],
+        ["TouchHits", "Sum", "Count"],
+        ["TouchMisses", "Sum", "Count"],
+        ["NewConnections", "Sum", "Count"],
+        ["NewItems", "Sum", "Count"],
+        ["UnusedMemory", "Average", "Bytes"]
+      ]
+
       def clusters(engine = 'memcached')
         ec = AWS::ElastiCache.new(
           :access_key_id => @aws_access_key,
@@ -16,50 +58,6 @@ module NewRelicAWS
             }
           end
         end.compact
-      end
-
-      def metric_list
-        [
-          ["CPUUtilization", "Average", "Percent"],
-          ["SwapUsage", "Average", "Bytes"],
-          ["FreeableMemory", "Average", "Bytes"],
-          ["NetworkBytesIn", "Average", "Bytes"],
-          ["NetworkBytesOut", "Average", "Bytes"],
-          ["BytesUsedForCacheItems", "Average", "Bytes"],
-          ["BytesReadIntoMemcached", "Sum", "Bytes"],
-          ["BytesWrittenOutFromMemcached", "Sum", "Bytes"],
-          ["CasBadval", "Sum", "Count"],
-          ["CasHits", "Sum", "Count"],
-          ["CasMisses", "Sum", "Count"],
-          ["CmdFlush", "Sum", "Count"],
-          ["CmdGet", "Sum", "Count"],
-          ["CmdSet", "Sum", "Count"],
-          ["CurrConnections", "Average", "Count"],
-          ["CurrItems", "Average", "Count"],
-          ["DecrHits", "Sum", "Count"],
-          ["DecrMisses", "Sum", "Count"],
-          ["DeleteHits", "Sum", "Count"],
-          ["DeleteMisses", "Sum", "Count"],
-          ["Evictions", "Sum", "Count"],
-          ["GetHits", "Sum", "Count"],
-          ["GetMisses", "Sum", "Count"],
-          ["IncrHits", "Sum", "Count"],
-          ["IncrMisses", "Sum", "Count"],
-          ["Reclaimed", "Sum", "Count"],
-          ["BytesUsedForHash", "Average", "Bytes"],
-          ["CmdConfigGet", "Sum", "Count"],
-          ["CmdConfigSet", "Sum", "Count"],
-          ["CmdTouch", "Sum", "Count"],
-          ["CurrConfig", "Average", "Count"],
-          ["EvictedUnfetched", "Sum", "Count"],
-          ["ExpiredUnfetched", "Sum", "Count"],
-          ["SlabsMoved", "Sum", "Count"],
-          ["TouchHits", "Sum", "Count"],
-          ["TouchMisses", "Sum", "Count"],
-          ["NewConnections", "Sum", "Count"],
-          ["NewItems", "Sum", "Count"],
-          ["UnusedMemory", "Average", "Bytes"]
-        ]
       end
 
       def collect

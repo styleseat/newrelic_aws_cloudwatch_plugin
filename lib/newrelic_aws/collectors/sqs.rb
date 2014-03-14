@@ -1,6 +1,17 @@
 module NewRelicAWS
   module Collectors
     class SQS < Base
+      ALL_METRICS = [
+        ["NumberOfMessagesSent", "Sum", "Count"],
+        ["SentMessageSize", "Average", "Bytes"],
+        ["NumberOfMessagesReceived", "Sum", "Count"],
+        ["NumberOfEmptyReceives", "Sum", "Count"],
+        ["NumberOfMessagesDeleted", "Sum", "Count"],
+        ["ApproximateNumberOfMessagesDelayed", "Average", "Count"],
+        ["ApproximateNumberOfMessagesVisible", "Average", "Count"],
+        ["ApproximateNumberOfMessagesNotVisible", "Average", "Count"]
+      ]
+
       def queue_urls
         sqs = AWS::SQS.new(
           :access_key_id => @aws_access_key,
@@ -8,19 +19,6 @@ module NewRelicAWS
           :region => @aws_region
         )
         sqs.queues.map { |queue| queue.url }
-      end
-
-      def metric_list
-        [
-          ["NumberOfMessagesSent", "Sum", "Count"],
-          ["SentMessageSize", "Average", "Bytes"],
-          ["NumberOfMessagesReceived", "Sum", "Count"],
-          ["NumberOfEmptyReceives", "Sum", "Count"],
-          ["NumberOfMessagesDeleted", "Sum", "Count"],
-          ["ApproximateNumberOfMessagesDelayed", "Average", "Count"],
-          ["ApproximateNumberOfMessagesVisible", "Average", "Count"],
-          ["ApproximateNumberOfMessagesNotVisible", "Average", "Count"]
-        ]
       end
 
       def collect

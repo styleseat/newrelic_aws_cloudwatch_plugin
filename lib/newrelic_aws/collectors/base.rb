@@ -1,6 +1,20 @@
+require 'set'
+
 module NewRelicAWS
   module Collectors
     class Base
+      ALL_METRICS = [].freeze
+
+      class << self
+        def get_metric(name)
+          unless defined?(@metrics_by_name)
+            metrics = self.const_get(:ALL_METRICS)
+            @metrics_by_name = Hash[metrics.map { |m| [m[0], m] }]
+          end
+          @metrics_by_name[name]
+        end
+      end
+
       def initialize(access_key, secret_key, region, options)
         @aws_access_key = access_key
         @aws_secret_key = secret_key
@@ -11,6 +25,7 @@ module NewRelicAWS
           :region            => @aws_region
         )
         @cloudwatch_delay = options[:cloudwatch_delay] || 60
+        self.enabled_metrics = options[:metrics]
       end
 
       def get_data_point(options)
@@ -44,6 +59,24 @@ module NewRelicAWS
         component_name = get_component_name(options)
         [component_name, options[:metric_name], options[:unit].downcase, value]
       end
+
+      def enabled_metrics=(metric_names)
+        if metric_names.nil?
+          metric_list = self.class.const_get(:ALL_METRICS)
+        else
+          metric_list = []
+          for metric_name in metric_names
+            metric = self.class.get_metric(metric_name)
+            unless metric
+              raise ArgumentError, "Unrecognized metric: #{metric_name}"
+            end
+            metric_list << metric
+          end
+        end
+        @metric_list = metric_list
+      end
+
+      attr_reader :metric_list
 
       def collect
         []

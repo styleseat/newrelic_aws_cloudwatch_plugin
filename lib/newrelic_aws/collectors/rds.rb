@@ -1,6 +1,23 @@
 module NewRelicAWS
   module Collectors
     class RDS < Base
+      ALL_METRICS = [
+        ["BinLogDiskUsage", "Average", "Bytes"],
+        ["CPUUtilization", "Average", "Percent"],
+        ["DatabaseConnections", "Average", "Count"],
+        ["DiskQueueDepth", "Average", "Count"],
+        ["FreeableMemory", "Average", "Bytes"],
+        ["FreeStorageSpace", "Average", "Bytes"],
+        ["ReplicaLag", "Average", "Seconds"],
+        ["SwapUsage", "Average", "Bytes"],
+        ["ReadIOPS", "Average", "Count/Second"],
+        ["WriteIOPS", "Average", "Count/Second"],
+        ["ReadLatency", "Average", "Seconds"],
+        ["WriteLatency", "Average", "Seconds"],
+        ["ReadThroughput", "Average", "Bytes/Second"],
+        ["WriteThroughput", "Average", "Bytes/Second"]
+      ]
+
       def instance_ids
         rds = AWS::RDS.new(
           :access_key_id => @aws_access_key,
@@ -8,25 +25,6 @@ module NewRelicAWS
           :region => @aws_region
         )
         rds.instances.map { |instance| instance.id }
-      end
-
-      def metric_list
-        [
-          ["BinLogDiskUsage", "Average", "Bytes"],
-          ["CPUUtilization", "Average", "Percent"],
-          ["DatabaseConnections", "Average", "Count"],
-          ["DiskQueueDepth", "Average", "Count"],
-          ["FreeableMemory", "Average", "Bytes"],
-          ["FreeStorageSpace", "Average", "Bytes"],
-          ["ReplicaLag", "Average", "Seconds"],
-          ["SwapUsage", "Average", "Bytes"],
-          ["ReadIOPS", "Average", "Count/Second"],
-          ["WriteIOPS", "Average", "Count/Second"],
-          ["ReadLatency", "Average", "Seconds"],
-          ["WriteLatency", "Average", "Seconds"],
-          ["ReadThroughput", "Average", "Bytes/Second"],
-          ["WriteThroughput", "Average", "Bytes/Second"]
-        ]
       end
 
       def collect

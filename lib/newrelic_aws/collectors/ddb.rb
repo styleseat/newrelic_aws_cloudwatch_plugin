@@ -1,25 +1,23 @@
 module NewRelicAWS
   module Collectors
     class DDB < Base
+      ALL_METRICS = [
+        ["UserErrors", "Sum", "Count"],
+        ["SystemErrors", "Sum", "Count"],
+        ["ThrottledRequests", "Sum", "Count"],
+        ["ProvisionedReadCapacityUnits", "Sum", "Count"],
+        ["ProvisionedWriteCapacityUnits", "Sum", "Count"],
+        ["ConsumedReadCapacityUnits", "Sum", "Count"],
+        ["ConsumedWriteCapacityUnits", "Sum", "Count"],
+        ["ReturnedItemCount", "Sum", "Count"]
+      ]
+
       def tables
         ddb = AWS::DynamoDB.new(
           :access_key_id => @aws_access_key,
           :secret_access_key => @aws_secret_key
         )
         ddb.tables.map { |table| table.name }
-      end
-
-      def metric_list
-        [
-          ["UserErrors", "Sum", "Count"],
-          ["SystemErrors", "Sum", "Count"],
-          ["ThrottledRequests", "Sum", "Count"],
-          ["ProvisionedReadCapacityUnits", "Sum", "Count"],
-          ["ProvisionedWriteCapacityUnits", "Sum", "Count"],
-          ["ConsumedReadCapacityUnits", "Sum", "Count"],
-          ["ConsumedWriteCapacityUnits", "Sum", "Count"],
-          ["ReturnedItemCount", "Sum", "Count"]
-        ]
       end
 
       def collect

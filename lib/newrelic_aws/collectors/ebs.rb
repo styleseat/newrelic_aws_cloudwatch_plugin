@@ -1,6 +1,19 @@
 module NewRelicAWS
   module Collectors
     class EBS < Base
+      ALL_METRICS = [
+        ["VolumeReadBytes", "Sum", "Bytes"],
+        ["VolumeWriteBytes", "Sum", "Bytes"],
+        ["VolumeReadOps", "Sum", "Count"],
+        ["VolumeWriteOps", "Sum", "Count"],
+        ["VolumeTotalReadTime", "Sum", "Seconds"],
+        ["VolumeTotalWriteTime", "Sum", "Seconds"],
+        ["VolumeIdleTime", "Sum", "Seconds"],
+        ["VolumeQueueLength", "Sum", "Count"],
+        ["VolumeThroughputPercentage", "Average", "Percent"],
+        ["VolumeConsumedReadWriteOps", "Sum", "Count"]
+      ]
+
       def initialize(access_key, secret_key, region, options)
         super(access_key, secret_key, region, options)
         @ec2 = AWS::EC2.new(
@@ -23,21 +36,6 @@ module NewRelicAWS
         volumes = @ec2.volumes.filter('status', 'in-use').tagged(@tags).to_a
         volumes.concat(@ec2.volumes.filter('status', 'in-use').tagged('Name', 'name').tagged_values(@tags).to_a)
         volumes
-      end
-
-      def metric_list
-        [
-          ["VolumeReadBytes", "Sum", "Bytes"],
-          ["VolumeWriteBytes", "Sum", "Bytes"],
-          ["VolumeReadOps", "Sum", "Count"],
-          ["VolumeWriteOps", "Sum", "Count"],
-          ["VolumeTotalReadTime", "Sum", "Seconds"],
-          ["VolumeTotalWriteTime", "Sum", "Seconds"],
-          ["VolumeIdleTime", "Sum", "Seconds"],
-          ["VolumeQueueLength", "Sum", "Count"],
-          ["VolumeThroughputPercentage", "Average", "Percent"],
-          ["VolumeConsumedReadWriteOps", "Sum", "Count"]
-        ]
       end
 
       def collect

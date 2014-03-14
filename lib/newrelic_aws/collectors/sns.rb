@@ -1,6 +1,13 @@
 module NewRelicAWS
   module Collectors
     class SNS < Base
+      ALL_METRICS = [
+        ["NumberOfMessagesPublished", "Sum", "Count"],
+        ["PublishSize", "Average", "Bytes"],
+        ["NumberOfNotificationsDelivered" , "Sum", "Count"],
+        ["NumberOfNotificationsFailed", "Sum", "Count"]
+      ]
+
       def topic_names
         sns = AWS::SNS.new(
           :access_key_id => @aws_access_key,
@@ -8,15 +15,6 @@ module NewRelicAWS
           :region => @aws_region
         )
         sns.topics.map { |topic| topic.name }
-      end
-
-      def metric_list
-        [
-          ["NumberOfMessagesPublished", "Sum", "Count"],
-          ["PublishSize", "Average", "Bytes"],
-          ["NumberOfNotificationsDelivered" , "Sum", "Count"],
-          ["NumberOfNotificationsFailed", "Sum", "Count"]
-        ]
       end
 
       def collect

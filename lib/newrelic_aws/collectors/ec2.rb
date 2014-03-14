@@ -1,6 +1,15 @@
 module NewRelicAWS
   module Collectors
     class EC2 < Base
+      ALL_METRICS = [
+        ["CPUUtilization", "Average", "Percent"],
+        ["DiskReadOps", "Sum", "Count"],
+        ["DiskWriteOps", "Sum", "Count"],
+        ["DiskWriteBytes" , "Sum", "Bytes"],
+        ["NetworkIn", "Sum", "Bytes"],
+        ["NetworkOut", "Sum", "Bytes"]
+      ]
+
       def initialize(access_key, secret_key, region, options)
         super(access_key, secret_key, region, options)
         @ec2 = AWS::EC2.new(
@@ -23,17 +32,6 @@ module NewRelicAWS
         instances = @ec2.instances.tagged(@tags).to_a
         instances.concat(@ec2.instances.tagged('Name', 'name').tagged_values(@tags).to_a)
         instances
-      end
-
-      def metric_list
-        [
-          ["CPUUtilization", "Average", "Percent"],
-          ["DiskReadOps", "Sum", "Count"],
-          ["DiskWriteOps", "Sum", "Count"],
-          ["DiskWriteBytes" , "Sum", "Bytes"],
-          ["NetworkIn", "Sum", "Bytes"],
-          ["NetworkOut", "Sum", "Bytes"]
-        ]
       end
 
       def collect
